@@ -83,6 +83,11 @@ function promptUser() {
                   rePromptUser();
                 });           
                 break;
+              case "Add a role":
+                queries.addRole(db).then((results) =>{
+                    rePromptUser();
+                });           
+                 break;
               case "Return":
                   db.end();
                   break;

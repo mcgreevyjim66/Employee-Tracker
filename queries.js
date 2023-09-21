@@ -22,25 +22,48 @@ class Queries {
         console.table(results);
     }
     async addDepartment(db) {
+        const answer = await 
         inquirer
-        .prompt({
+        .prompt(
+            {
             type: "input",
             name: "dept",
             message: "Enter the name of the new department:",
-        })
-        .then (async (answer) => {
-            const querySQL = `INSERT INTO department (name) VALUES ("${answer.dept}")`;
-            const [results] = await db.promise().query(querySQL);
+             }       
+        )
+        const querySQL = `INSERT INTO department (name) VALUES ("${answer.dept}")`;
+        const [results] = await db.promise().query(querySQL);
 
             console.log(`Added department ${answer.dept} to the database!`);
 
-            // console.log(answer.debt);
-            console.table(results);
-        }
-        )
-    }        
+            //console.table(results);
+    }
+
+        
     async addRole(db) {
-        const querySQL = "";
+        const answer = await 
+        inquirer
+        .prompt(
+            {
+            type: "input",
+            name: "role",
+            message: "Enter the name of the new role:",
+            },
+            {  
+            type: "input",
+            name: "salary",
+            message: "Enter the salary of the new role:",
+            },
+            {  
+            type: "input",
+            name: "dept",
+            message: "Enter the dept of the new role:",
+            }
+            )
+
+
+
+        const querySQL = `INSERT INTO role (title, salary, department_id) VALUES ("${answer.role}"), ("${answer.salary}), ("${answer.dept}")`;
         const [results] = await db.promise().query(querySQL);
 
         console.table(results);
