@@ -1,4 +1,5 @@
-const prompter = require('./server');
+const inquirer = require('inquirer');
+
 
 class Queries {
     constructor(db) {
@@ -6,38 +7,58 @@ class Queries {
       }
     async viewAllDepartments(db) {
      console.log("viewAllDepartments")
-      const querySQL = "SELECT * FROM department";
-      
-     // const results = await db.promise().query(querySQL);
-      const results = await db.query(querySQL);
+      const querySQL = "SELECT id, name FROM department";
+      const [results] = await db.promise().query(querySQL);
       console.table(results);
-    
-      //connection.end();
-      
-      //await db.query(querySQL, (err, res) => {
-      // if (err) throw err;
-     //   console.table(res);
-     //   return;
-     // }
-     // );
     }
-    viewAllRoles(db) {
+    async viewAllRoles(db) {
         const querySQL = "SELECT * FROM role";
-        db.query(querySQL, (err, res) => {
-            if (err) throw err;
-            console.table(res);
-            prompter.promptUser();
-
-        });
+        const [results] = await db.promise().query(querySQL);
+        console.table(results);
     }
-    viewAllEmployees(db) {
+    async viewAllEmployees(db) {
         const querySQL = "SELECT * FROM employee";
-        db.query(querySQL, (err, res) => {
-            if (err) throw err;
-            console.table(res);
-            process.exit(0)
-        });
+        const [results] = await db.promise().query(querySQL);
+        console.table(results);
     }
+    async addDepartment(db) {
+        inquirer
+        .prompt({
+            type: "input",
+            name: "dept",
+            message: "Enter the name of the new department:",
+        })
+        .then (async (answer) => {
+            const querySQL = `INSERT INTO department (name) VALUES ("${answer.dept}")`;
+            const [results] = await db.promise().query(querySQL);
+
+            console.log(`Added department ${answer.dept} to the database!`);
+
+            // console.log(answer.debt);
+            console.table(results);
+        }
+        )
+    }        
+    async addRole(db) {
+        const querySQL = "";
+        const [results] = await db.promise().query(querySQL);
+
+        console.table(results);
+    }
+    async addEmployee(db) {
+        const querySQL = "";
+        const [results] = await db.promise().query(querySQL);
+
+        console.table(results);
+    }
+    async updateEmployeeRole(db) {
+        const querySQL = "";
+        const [results] = await db.promise().query(querySQL);
+
+        console.table(results);
+    }
+
 }
+
 
   module.exports = Queries;

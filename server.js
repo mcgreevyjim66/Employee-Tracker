@@ -63,21 +63,28 @@ function promptUser() {
           switch (selectedQuery.selection) {
               case "View all departments":
                  // viewAllDepartments();
-                 queries.viewAllDepartments(db);
-                 // restart the application
-                 console.log("calling reprompt")
+                 queries.viewAllDepartments(db).then((results) =>{
                  rePromptUser();
-                  break;
+                 });
+                 break;
               case "View all roles":
-                queries.viewAllRoles(db);
+                queries.viewAllRoles(db).then((results) =>{
                 rePromptUser();
+                });
+    
                 break;
               case "View all employees":
-                queries.viewAllEmployees(db);
+                queries.viewAllEmployees(db).then((results) =>{
+                  rePromptUser();
+                });
+                break;
+              case "Add a department":
+                queries.addDepartment(db).then((results) =>{
+                  rePromptUser();
+                });           
                 break;
               case "Return":
                   db.end();
-                  //console.log("Goodbye!");
                   break;
           }
       });
@@ -99,6 +106,4 @@ function viewAllDepartments() {
   });
 }
 
-
-module.exports = promptUser;
 
