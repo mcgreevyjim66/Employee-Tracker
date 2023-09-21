@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
 // Import and require mysql2
 const mysql = require('mysql2');
-
+//const mysql = require('mysql2/promise');
 const Queries = require('./queries');
 
 
@@ -23,16 +23,19 @@ const db = mysql.createConnection(
   console.log(`Connected to the employee_tracker_db database.`),
 );
 
+
+console.log("before db.connect")
+db.connect((err) => {
+  console.log("in db.connect")
+  if (err) throw err;
+  console.log("Connected to the database!");
+ // start the application
+  promptUser();
+});
+
 const queries = new Queries(db);
 
-//db.connect((err) => {
- // if (err) throw err;
- // console.log("Connected to the database!");
-  // start the application
-  ///promptUser();
-//});
-
-promptUser();
+//promptUser();
 //start employee tracker CMS
 function promptUser() {
   inquirer
@@ -67,6 +70,7 @@ function promptUser() {
                   break;
               case "View all roles":
                 queries.viewAllRoles(db);
+                rePromptUser();
                 break;
               case "View all employees":
                 queries.viewAllEmployees(db);
@@ -95,4 +99,6 @@ function viewAllDepartments() {
   });
 }
 
+
+module.exports = promptUser;
 
