@@ -50,13 +50,8 @@ function promptUser() {
               "Add a department",
               "Add a role",
               "Add an employee",
-              "Add a Manager",
               "Update an employee role",
-              "View Employees by Manager",
-              "View Employees by Department",
-              "Delete Departments | Roles | Employees",
-              "View the total utilized budget of a department",
-              "Return",
+               "Return",
           ],
       })
       .then((selectedQuery) => {
@@ -88,6 +83,16 @@ function promptUser() {
                     rePromptUser();
                 });           
                  break;
+              case "Add an employee":
+              queries.addEmployee(db).then((results) =>{
+                  rePromptUser();
+              });           
+              break;
+              case "Update an employee role":
+                queries.updateEmployeeRole(db).then((results) =>{
+                    rePromptUser();
+                });           
+                break;
               case "Return":
                   db.end();
                   break;
@@ -99,16 +104,6 @@ function promptUser() {
 function rePromptUser(){
   console.log("re prompt user");
   promptUser();
-}
-// function to view all departments
-function viewAllDepartments() {
-  const querySQL = "SELECT * FROM department";
-  db.query(querySQL, (err, res) => {
-      if (err) throw err;
-      console.table(res);
-      // restart the application
-      promptUser();
-  });
 }
 
 

@@ -1,15 +1,15 @@
 INSERT INTO department (name)
 VALUES 
-('Executive Board'),
-('Marketing'),
-('Human Resources'),
-('Finance'),
-('Engineering'),
-('Information Technology'),
-('Customer Relations'),
-('Research and Development'),
-('Legal'),
-('Maintenance');
+('Sales'),
+('Quality Assurance'),
+('Product Management'),
+('Operations'),
+('Supply Chain'),
+('Procurement'),
+('Logistics'),
+('Training and Development'),
+('Security'),
+('Compliance');
 
 INSERT INTO role (title, salary, department_id)
 VALUES 
