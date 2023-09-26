@@ -1,21 +1,35 @@
+// import inquirer package
 const inquirer = require('inquirer');
 
 
+//define exportable class to run all of the selected queries, db instance passed in from server.js
 class Queries {
     constructor(db) {
         this.db = db;
       }
+    // define each of the selected queries as an async function, build the query, prompt the user for any inout and display the results
     async viewAllDepartments(db) {
-     console.log("viewAllDepartments")
-      const querySQL = "SELECT id, name FROM department";
-      const [results] = await db.promise().query(querySQL);
-      console.table(results);
+        console.log("viewAllDepartments");
+        const querySQL = "SELECT id, name FROM department";
+        try {
+            const [results] = await db.promise().query(querySQL);
+            console.table(results);
+        } catch (error) {
+            console.error('SQL error: ', error);
+        }
     }
+    // view table of all the available roles
     async viewAllRoles(db) {
-        const querySQL = "SELECT role.title, role.id, department.name, role.salary from role join department on role.department_id = department.id";
-        const [results] = await db.promise().query(querySQL);
-        console.table(results);
+        const querySQL = "SELECT role.title, role.id, department.name, role.department_id, role.salary from role join department on role.department_id = department.id";
+        try {
+            const [results] = await db.promise().query(querySQL);
+            console.table(results);
+        } catch (error) {
+            console.error('SQL error: ', error);
+        }
+
     }
+    //view table of all the employees and their managers
     async viewAllEmployees(db) {
         const querySQL = `SELECT e.id, e.first_name, e.last_name, r.title, d.name, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager_name
         FROM employee e
@@ -23,9 +37,15 @@ class Queries {
         LEFT JOIN department d ON r.department_id = d.id
         LEFT JOIN employee m ON e.manager_id = m.id;
         `;
-        const [results] = await db.promise().query(querySQL);
-        console.table(results);
+        try {
+            const [results] = await db.promise().query(querySQL);
+            console.table(results);
+        } catch (error) {
+            console.error('SQL error: ', error);
+        }
+
     }
+    // add a new department to the table
     async addDepartment(db) {
         const answer = await 
         inquirer
@@ -37,15 +57,21 @@ class Queries {
              }       
         )
         const querySQL = `INSERT INTO department (name) VALUES ("${answer.dept}")`;
-        const [results] = await db.promise().query(querySQL);
-
+        try {
+            const [results] = await db.promise().query(querySQL);
             console.log(`Added department ${answer.dept} to the database!`);
+        } catch (error) {
+            console.error('SQL error: ', error);
+        }
 
-            //console.table(results);
     }
 
-        
+    // add a new role to the table
     async addRole(db) {
+        const query = "SELECT * FROM department";
+        const [resDepartments] = await db.promise().query(query);
+
+
         const answer = await 
         inquirer
         .prompt([
@@ -59,26 +85,33 @@ class Queries {
             name: "salary",
             message: "Enter the salary of the new role:",
             },
-            {  
-            type: "input",
-            name: "dept",
-            message: "Enter the dept of the new role:",
+            {
+                type: "list",
+                name: "department",
+                message: "Select the department for the new role:",
+                choices: resDepartments.map(
+                   
+                    (department) => ({ name: department.name, value: department.id })
+                ),
             }
             ]
             )
 
+        const querySQL = `INSERT INTO role (title, salary, department_id) VALUES ("${answer.role}", "${answer.salary}", "${answer.department}")`;
+        
+        try {
+            const [results] = await db.promise().query(querySQL);
+            console.log(`Role "${answer.role}" updated successfully!`);
+        } catch (error) {
+            console.error('SQL error: ', error);
+        }
 
-
-        const querySQL = `INSERT INTO role (title, salary, department_id) VALUES ("${answer.role}", "${answer.salary}", "${answer.dept}")`;
-        const [results] = await db.promise().query(querySQL);
-
-        console.table(results);
     }
-// Function to add an employee
+// Function to add an employee to the table
    async addEmployee(db) {
     // Retrieve list of roles from the database
         const [roleResults] = await this.db.promise().query("SELECT id, title FROM role");
-        //console.log("add employee select from role" + JSON.stringify(roleResults, null, 2));
+        
         const roles = await roleResults.map(({ id, title }) => (
             {
             name: title,
@@ -94,8 +127,6 @@ class Queries {
                     name,
                     value: id,
                 }));
-        //console.log("managers" + JSON.stringify(managers, null, 2))
-                // Prompt the user for employee information
 
     const answers = await inquirer
             .prompt([
@@ -135,7 +166,9 @@ class Queries {
    
    const [results] = await db.promise().query(sql, values);
 
-   //console.log("add emp results" + results)
+   console.log(`Employee  ${answers.firstName}  ${answers.lastName}  added to table!!`)
+
+
     
 }
 
@@ -182,5 +215,5 @@ async updateEmployeeRole() {
 
 }
 
-
+// export the Queries class
   module.exports = Queries;

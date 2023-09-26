@@ -1,11 +1,12 @@
+// import inquirer package
 const inquirer = require('inquirer');
 // Import and require mysql2
 const mysql = require('mysql2');
-//const mysql = require('mysql2/promise');
+// import queries files
 const Queries = require('./queries');
 
 
-
+// set port for server
 const PORT = process.env.PORT || 3001;
 
 
@@ -24,9 +25,9 @@ const db = mysql.createConnection(
 );
 
 
-console.log("before db.connect")
+//console.log("before db.connect")
 db.connect((err) => {
-  console.log("in db.connect")
+//  console.log("in db.connect")
   if (err) throw err;
   console.log("Connected to the database!");
  // start the application
@@ -35,8 +36,8 @@ db.connect((err) => {
 
 const queries = new Queries(db);
 
-//promptUser();
-//start employee tracker CMS
+
+//start employee tracker CMS prompting the user for input
 function promptUser() {
   inquirer
       .prompt({
@@ -55,9 +56,10 @@ function promptUser() {
           ],
       })
       .then((selectedQuery) => {
+        // call the function related to the activity the user selected
           switch (selectedQuery.selection) {
               case "View all departments":
-                 // viewAllDepartments();
+                 //viewAllDepartments();
                  queries.viewAllDepartments(db).then((results) =>{
                  rePromptUser();
                  });
@@ -102,7 +104,7 @@ function promptUser() {
 
 // re prompt the user
 function rePromptUser(){
-  console.log("re prompt user");
+  //console.log("re prompt user");
   promptUser();
 }
 
